@@ -5,7 +5,6 @@ Documentation
 ...                 implementation is not complete and should be done by the user of
 ...                 this template.
 
-Library             DateTime
 Library             FakerLibrary
 Library             RPA.Robocorp.Vault
 Library             Collections
@@ -13,10 +12,16 @@ Library             RPA.Robocorp.WorkItems
 
 
 *** Tasks ***
-Minimal task
-    ${current_pass}=    Get current password
+Change site password
+    ${password_options}=    Get work item variables
+    ${current_pass}=    Get current password    ${password_options}[site_secret]
     ${new_pass}=    Create password
-    Change my password    ${current_pass}    ${new_pass}
+    ...    ${password_options}[length]
+    ...    ${password_options}[special_chars]
+    ...    ${password_options}[digits]
+    ...    ${password_options}[upper_case]
+    ...    ${password_options}[lower_case]
+    Change my password    ${password_options}[site_secret]    ${current_pass}    ${new_pass}
     Store my password    ${current_pass}    ${new_pass}
     Log    Done.
 
@@ -28,8 +33,8 @@ Get current password
     ...    associated secret from the Control Room Vault. Provide the name of the vault
     ...    item in that work item variable. The Vault item should have the password
     ...    stored in the value ``password``.
+    [Arguments]    ${site_secret}
 
-    ${site_secret}=    Get work item variable    site_secret
     ${secret}=    Get Secret    ${site_secret}
     RETURN    ${secret}
 
@@ -54,11 +59,14 @@ Change my password
     [Documentation]
     ...    Use this section to create the code
     ...    for logging into the site and changing the password
-    [Arguments]    ${current_pass}    ${new_pass}
+    [Arguments]    ${site_secret}    ${current_pass}    ${new_pass}
     # This keyword should be updated to perform the appropriate functions for the provided site.
     # It could be possible to create multiple keywords for different sites and then select them
     # based on the provided ``site_secret``, so this bot could be more versatile.
-    No operation
+    ${site_secret}=    Get work item variable    site_secret
+    ${site_credentials}=    Get secret    ${site_secret}
+    Log    Navigating to ${site_secret} at url: ${site_secret}[site_url]
+    Log    Logging in with username ${site_secret}[username] and password
 
 Store my password
     [Documentation]
