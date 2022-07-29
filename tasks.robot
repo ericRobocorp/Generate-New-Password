@@ -63,10 +63,9 @@ Change my password
     # This keyword should be updated to perform the appropriate functions for the provided site.
     # It could be possible to create multiple keywords for different sites and then select them
     # based on the provided ``site_secret``, so this bot could be more versatile.
-    ${site_secret}=    Get work item variable    site_secret
     ${site_credentials}=    Get secret    ${site_secret}
-    Log    Navigating to ${site_secret} at url: ${site_secret}[site_url]
-    Log    Logging in with username ${site_secret}[username] and password
+    Log    Navigating to ${site_secret} at url: ${site_credentials}[site_url]
+    Log    Logging in with username ${site_credentials}[username] and password
 
 Store my password
     [Documentation]
